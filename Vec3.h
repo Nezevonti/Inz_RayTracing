@@ -11,6 +11,12 @@ public:
 
     Vec3 cross(const Vec3& other) const;
 
+    float magnitude() const;
+
+    float sinBetween(const Vec3& other) const;
+
+    float angleBetween(const Vec3& other) const;
+
     void print() const;
 
     float& operator[](int index);

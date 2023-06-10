@@ -2,10 +2,17 @@
 //
 
 #include <iostream>
+#include "Vec3.h"
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    Vec3 a(0, 0, 1);
+    Vec3 b(0, 1, 0);
+    Vec3 c(0, 3, 4);
+
+    std::cout << a.sinBetween(b) << "\n";
+    std::cout << a.sinBetween(c);
+
 }
 
 // Uruchomienie programu: Ctrl + F5 lub menu Debugowanie > Uruchom bez debugowania
