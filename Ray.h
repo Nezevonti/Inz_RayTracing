@@ -9,7 +9,7 @@ public:
     Vec3 direction;
     Vec3 direction_inverse;
 
-    Ray(const Vec3& _origin, const Vec3& _direction);
+    Ray(const Vec3& _rigin, const Vec3& direction);
 };
 
 #endif  // RAY_H

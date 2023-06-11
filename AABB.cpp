@@ -11,7 +11,7 @@ Vec3 AABB::calculateIntersectionPoint(const Ray& ray, float t) const {
         ray.origin.z + t * ray.direction.z);
 }
 
-bool AABB::intersect(const Ray& ray, float& tmin, float& tmax, Vec3& intersectionPoint, AABB_Face& intersectionFace) const {
+bool AABB::intersect(const Ray& ray, Vec3& intersectionPoint, AABB_Face& intersectionFace) const {
 
     //Uses : Fast, Branchless Ray/Bounding Box Intersections
     //From : https://tavianator.com/2011/ray_box.html

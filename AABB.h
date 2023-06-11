@@ -25,7 +25,7 @@ public:
 
     Vec3 calculateIntersectionPoint(const Ray& ray, float t) const;
 
-    bool intersect(const Ray& ray, float& tmin, float& tmax, Vec3& intersectionPoint, AABB_Face& intersectionFace) const;
+    bool intersect(const Ray& ray, Vec3& intersectionPoint, AABB_Face& intersectionFace) const;
 
     static Vec3 getFaceNormal(AABB_Face face);
 

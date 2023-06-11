@@ -5,7 +5,8 @@
 #include "Vec3.h"
 #include "Ray.h"
 #include "AABB.h"
-
+#include "Voxel.h"
+#include "VoxelGrid.h"
 
 void intersectionTest(Ray ray, AABB aabb) {
 
@@ -16,7 +17,7 @@ void intersectionTest(Ray ray, AABB aabb) {
     // Test for intersection
     float tmin = -INFINITY;
     float tmax = INFINITY;
-    bool intersect = aabb.intersect(ray, tmin, tmax, intersectionPoint, intersectionFace);
+    bool intersect = aabb.intersect(ray, intersectionPoint, intersectionFace);
 
 
     // Print the intersection result
@@ -43,7 +44,7 @@ int main()
     std::cout << a.sinBetween(b) << "\n";
     std::cout << a.sinBetween(c);
     */
-
+    /*
     Vec3 aabbMin(-1, -1, -1);
     Vec3 aabbMax(1, 1, 1);
     AABB aabb(aabbMin, aabbMax);
@@ -54,6 +55,36 @@ int main()
 
     std::cout << "test0" << std::endl;
     intersectionTest(ray, aabb);
+    */
+
+    Vec3 aabbMin(-2, -2, -2);
+    Vec3 aabbMax(2, 2, 2);
+    
+    Vec3 rayOrigin(-2, 0, -2.5);
+    Vec3 rayDirection(1, 0, 2);
+    Ray ray(rayOrigin, rayDirection);
+
+    VoxelGrid grid(4, 4, 4, aabbMin, aabbMax);
+
+    Vec3 intersectionPoint(0, 0, 0);
+    AABB_Face intersectionFace;
+
+    float tmin = -INFINITY;
+    float tmax = INFINITY;
+
+    bool intersect = grid.mainVoxel.intersect(ray, intersectionPoint, intersectionFace);
+
+    if (intersect) {
+        std::cout << "Intersection occurred at : ";
+        intersectionPoint.print();
+        std::cout << "\nnormal : ";
+        std::cout << grid.mainVoxel.getFaceName(intersectionFace) << "\n";
+        grid.mainVoxel.getFaceNormal(intersectionFace).print();
+        std::cout << "\n\n";
+    }
+    else {
+        std::cout << "No intersection" << std::endl;
+    }
 }
 
 // Uruchomienie programu: Ctrl + F5 lub menu Debugowanie > Uruchom bez debugowania

@@ -4,15 +4,36 @@
 #include "voxel.h"
 
 // VoxelGrid constructor implementation
-VoxelGrid::VoxelGrid(int _sizeX, int _sizeY, int _sizeZ)
-    : sizeX(_sizeX), sizeY(_sizeY), sizeZ(_sizeZ) {
+VoxelGrid::VoxelGrid(int sizeX, int sizeY, int sizeZ)
+    : sizeX(sizeX), sizeY(sizeY), sizeZ(sizeZ) {
+
     int numVoxels = sizeX * sizeY * sizeZ;
     voxels = new Voxel[numVoxels];
+
+    mainVoxel = Voxel(Vec3(0, 0, 0), Vec3(sizeX, sizeY, sizeZ), 1.0);
+}
+
+VoxelGrid::VoxelGrid(int sizeX, int sizeY, int sizeZ, Vec3 minPoint, Vec3 maxPoint) 
+    : sizeX(sizeX), sizeY(sizeY), sizeZ(sizeZ) {
+
+        int numVoxels = sizeX * sizeY * sizeZ;
+        voxels = new Voxel[numVoxels];
+
+        mainVoxel =  Voxel(minPoint, maxPoint, 1.0);
+
 }
 
 // VoxelGrid destructor implementation
 VoxelGrid::~VoxelGrid() {
     delete[] voxels;
+}
+
+Vec3 VoxelGrid::getVoxelArrayIndexes(const Vec3& point) const {
+    int indexX = static_cast<int>((point.x - mainVoxel.minPoint.x) / voxelSize);
+    int indexY = static_cast<int>((point.y - mainVoxel.minPoint.y) / voxelSize);
+    int indexZ = static_cast<int>((point.z - mainVoxel.minPoint.z) / voxelSize);
+
+    return Vec3(indexX, indexY, indexZ);
 }
 
 void VoxelGrid::traverseRay(const Ray& ray) {
@@ -21,8 +42,15 @@ void VoxelGrid::traverseRay(const Ray& ray) {
     int stepY = (ray.direction.y >= 0) ? 1 : -1;
     int stepZ = (ray.direction.z >= 0) ? 1 : -1;
 
+    //Calculate initial intersection of the ray with the grid space
+    Vec3 intersectionPoint(0, 0, 0);
+    AABB_Face intersectionFace;
+
+    bool intersect = mainVoxel.intersect(ray, intersectionPoint, intersectionFace);
+    if (!intersect) return; //ray doesnt hit the gridspace, no need to walk it
+
     // Calculate the initial cell coordinates
-    int currentX = static_cast<int>(ray.origin.x);
+    int currentX = static_cast<int>(intersex);
     int currentY = static_cast<int>(ray.origin.y);
     int currentZ = static_cast<int>(ray.origin.z);
 

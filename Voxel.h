@@ -9,7 +9,7 @@ public:
     float refractiveIndex;
 
     Voxel();
-    Voxel(const Vec3& _minPoint, const Vec3& _maxPoint, float _refractiveIndex);
+    Voxel(const Vec3& minPoint, const Vec3& maxPoint, float refractiveIndex);
 };
 
 #endif // VOXEL_H
