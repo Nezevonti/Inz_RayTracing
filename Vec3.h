@@ -19,7 +19,7 @@ public:
 
     void print() const;
 
-    float& operator[](int index);
+    const float& operator[](int index) const;
 
     bool operator==(const Vec3& other) const;
 };

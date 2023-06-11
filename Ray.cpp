@@ -1,5 +1,5 @@
 #include "ray.h"
 
-Ray::Ray(const Vec3& _origin, const Vec3& _direction)
-    : origin(_origin), direction(_direction),
-    direction_inverse(1.0f / _direction.x, 1.0f / _direction.y, 1.0f / _direction.z) {}
+Ray::Ray(const Vec3& origin, const Vec3& direction)
+    : origin(origin), direction(direction),
+    direction_inverse(1.0f / direction.x, 1.0f / direction.y, 1.0f / direction.z) {}

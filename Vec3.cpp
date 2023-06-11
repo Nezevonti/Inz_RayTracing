@@ -28,7 +28,7 @@ void Vec3::print() const {
     std::cout << "(" << x << ", " << y << ", " << z << ")" << std::endl;
 }
 
-float& Vec3::operator[](int index) {
+const float& Vec3::operator[](int index) const{
     if (index == 0) return x;
     if (index == 1) return y;
     if (index == 2) return z;

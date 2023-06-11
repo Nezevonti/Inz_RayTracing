@@ -127,13 +127,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AABB.cpp" />
     <ClCompile Include="Inz_RayTracing.cpp" />
     <ClCompile Include="Ray.cpp" />
     <ClCompile Include="Vec3.cpp" />
+    <ClCompile Include="Voxel.cpp" />
+    <ClCompile Include="VoxelGrid.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AABB.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="Vec3.h" />
+    <ClInclude Include="Voxel.h" />
+    <ClInclude Include="VoxelGrid.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
