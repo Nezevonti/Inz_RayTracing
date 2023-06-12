@@ -28,10 +28,21 @@ VoxelGrid::~VoxelGrid() {
     delete[] voxels;
 }
 
+Vec3 VoxelGrid::getVoxelSize() const {
+    float voxelSizeX = (mainVoxel.maxPoint.x - mainVoxel.minPoint.x) / sizeX;
+    float voxelSizeY = (mainVoxel.maxPoint.y - mainVoxel.minPoint.y) / sizeY;
+    float voxelSizeZ = (mainVoxel.maxPoint.z - mainVoxel.minPoint.z) / sizeZ;
+
+    return Vec3(voxelSizeX, voxelSizeY, voxelSizeZ);
+}
+
 Vec3 VoxelGrid::getVoxelArrayIndexes(const Vec3& point) const {
-    int indexX = static_cast<int>((point.x - mainVoxel.minPoint.x) / voxelSize);
-    int indexY = static_cast<int>((point.y - mainVoxel.minPoint.y) / voxelSize);
-    int indexZ = static_cast<int>((point.z - mainVoxel.minPoint.z) / voxelSize);
+
+    Vec3 voxelSize = getVoxelSize();
+
+    int indexX = static_cast<int>((point.x - mainVoxel.minPoint.x) / voxelSize.x);
+    int indexY = static_cast<int>((point.y - mainVoxel.minPoint.y) / voxelSize.y);
+    int indexZ = static_cast<int>((point.z - mainVoxel.minPoint.z) / voxelSize.z);
 
     return Vec3(indexX, indexY, indexZ);
 }
@@ -50,9 +61,10 @@ void VoxelGrid::traverseRay(const Ray& ray) {
     if (!intersect) return; //ray doesnt hit the gridspace, no need to walk it
 
     // Calculate the initial cell coordinates
-    int currentX = static_cast<int>(intersex);
-    int currentY = static_cast<int>(ray.origin.y);
-    int currentZ = static_cast<int>(ray.origin.z);
+    Vec3 currentVoxel = getVoxelArrayIndexes(intersectionPoint);
+    int currentX = currentVoxel.x;
+    int currentY = currentVoxel.y;
+    int currentZ = currentVoxel.z;
 
     // Calculate the tDelta values
     float tDeltaX = std::abs(1.0f / ray.direction.x);
@@ -95,6 +107,10 @@ void VoxelGrid::traverseRay(const Ray& ray) {
 
         // Update the ray parameter (t) based on the chosen axis and the new tMax value
         // ...
+        currentVoxel.x = currentX;
+        currentVoxel.y = currentY;
+        currentVoxel.z = currentZ;
+        currentVoxel.print();
 
         // Check for intersection or termination conditions
         // ...

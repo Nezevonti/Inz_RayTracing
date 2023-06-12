@@ -8,6 +8,7 @@ class Voxel : public AABB {
 public:
     float refractiveIndex;
 
+
     Voxel();
     Voxel(const Vec3& minPoint, const Vec3& maxPoint, float refractiveIndex);
 };

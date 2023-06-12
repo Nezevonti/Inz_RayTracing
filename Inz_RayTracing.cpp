@@ -72,19 +72,7 @@ int main()
     float tmin = -INFINITY;
     float tmax = INFINITY;
 
-    bool intersect = grid.mainVoxel.intersect(ray, intersectionPoint, intersectionFace);
-
-    if (intersect) {
-        std::cout << "Intersection occurred at : ";
-        intersectionPoint.print();
-        std::cout << "\nnormal : ";
-        std::cout << grid.mainVoxel.getFaceName(intersectionFace) << "\n";
-        grid.mainVoxel.getFaceNormal(intersectionFace).print();
-        std::cout << "\n\n";
-    }
-    else {
-        std::cout << "No intersection" << std::endl;
-    }
+    grid.traverseRay(ray);
 }
 
 // Uruchomienie programu: Ctrl + F5 lub menu Debugowanie > Uruchom bez debugowania
