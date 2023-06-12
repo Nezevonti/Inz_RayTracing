@@ -2,11 +2,13 @@
 #define VOXEL_H
 
 #include "aabb.h"
+#include <vector>
 
 
 class Voxel : public AABB {
 public:
     float refractiveIndex;
+    bool occupied;
 
 
     Voxel();
