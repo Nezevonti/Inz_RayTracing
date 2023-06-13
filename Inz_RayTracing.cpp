@@ -2,11 +2,14 @@
 //
 
 #include <iostream>
+#include <cassert>
+
 #include "Vec3.h"
 #include "Ray.h"
 #include "AABB.h"
 #include "Voxel.h"
 #include "VoxelGrid.h"
+#include "Camera.h"
 
 void intersectionTest(Ray ray, AABB aabb) {
 
@@ -34,9 +37,8 @@ void intersectionTest(Ray ray, AABB aabb) {
     }
 }
 
-int main()
-{
-    /*
+
+/*
     Vec3 a(0, 0, 1);
     Vec3 b(0, 1, 0);
     Vec3 c(0, 3, 4);
@@ -57,12 +59,17 @@ int main()
     intersectionTest(ray, aabb);
     */
 
+/*
+int main()
+{
+    
+
     Vec3 aabbMin(-2, -2, -2);
     Vec3 aabbMax(2, 2, 2);
     
     Vec3 rayOrigin(-2, 0, -2.5);
     Vec3 rayDirection(1, 0, 2);
-    Ray ray(rayOrigin, rayDirection);
+    //Ray ray(rayOrigin, rayDirection);
 
     VoxelGrid grid(4, 4, 4, aabbMin, aabbMax);
 
@@ -72,20 +79,148 @@ int main()
     float tmin = -INFINITY;
     float tmax = INFINITY;
 
-    grid.traverseRay(ray);
+    //grid.traverseRay(ray);
+
+    Vec3 cameraPosition(-8, 0, 0);
+    Vec3 cameraTarget(0,0,0);
+    Vec3 up(0, 0, 1);
+
+    Camera c(cameraPosition, cameraTarget,up, 0.45);
+
+    int pixelX = 0;
+    int pixelY = 0;
+    Ray ray = c.getRay(pixelX, pixelY);
+    assert(ray.origin == c.position);
+    
+    pixelX = c.imageWidth / 2;
+    pixelY = c.imageHeight / 2;
+    ray = c.getRay(pixelX, pixelY);
+    assert(ray.origin == c.position);
+    assert(ray.direction == c.direction);
+
+
 }
 
-// Uruchomienie programu: Ctrl + F5 lub menu Debugowanie > Uruchom bez debugowania
-// Debugowanie programu: F5 lub menu Debugowanie > Rozpocznij debugowanie
-
-// Porady dotyczące rozpoczynania pracy:
-//   1. Użyj okna Eksploratora rozwiązań, aby dodać pliki i zarządzać nimi
-//   2. Użyj okna programu Team Explorer, aby nawiązać połączenie z kontrolą źródła
-//   3. Użyj okna Dane wyjściowe, aby sprawdzić dane wyjściowe kompilacji i inne komunikaty
-//   4. Użyj okna Lista błędów, aby zobaczyć błędy
-//   5. Wybierz pozycję Projekt > Dodaj nowy element, aby utworzyć nowe pliki kodu, lub wybierz pozycję Projekt > Dodaj istniejący element, aby dodać istniejące pliku kodu do projektu
-//   6. Aby w przyszłości ponownie otworzyć ten projekt, przejdź do pozycji Plik > Otwórz > Projekt i wybierz plik sln
+*/
 
 
-        
+#include <Windows.h>
+#include <vector>
+
+// Window dimensions
+const int WindowWidth = 640;
+const int WindowHeight = 480;
+
+// Array of pixels in RGB format
+Vec3 *pixels;
+
+// Win32 Window Procedure
+LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    switch (uMsg)
+    {
+    case WM_PAINT:
+    {
+        PAINTSTRUCT ps;
+        HDC hdc = BeginPaint(hwnd, &ps);
+
+        // Iterate over the pixels and set their colors on the window
+        for (int y = 0; y < WindowHeight; ++y)
+        {
+            for (int x = 0; x < WindowWidth; ++x)
+            {
+                int index = y * WindowWidth + x;
+                const Vec3& pixel = pixels[index];
+                
+                COLORREF color = RGB(pixel.x * 255, pixel.y * 255, pixel.z * 255);
+                SetPixel(hdc, x, y, color);
+            }
+        }
+
+        EndPaint(hwnd, &ps);
+        return 0;
+    }
+    case WM_CLOSE:
+        DestroyWindow(hwnd);
+        return 0;
+    case WM_DESTROY:
+        PostQuitMessage(0);
+        return 0;
+    }
+
+    return DefWindowProc(hwnd, uMsg, wParam, lParam);
+}
+
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+{
+    // Create a window class
+    WNDCLASS wc = {};
+    wc.lpfnWndProc = WindowProc;
+    wc.hInstance = hInstance;
+    wc.lpszClassName = L"RayTracingWindow";
+    RegisterClass(&wc);
+
+    // Create the window
+    HWND hwnd = CreateWindowEx(
+        0,
+        L"RayTracingWindow",
+        L"Ray Tracing Window",
+        WS_OVERLAPPEDWINDOW,
+        CW_USEDEFAULT,
+        CW_USEDEFAULT,
+        WindowWidth,
+        WindowHeight,
+        NULL,
+        NULL,
+        hInstance,
+        NULL
+    );
+
+    if (hwnd == NULL)
+    {
+        return 0;
+    }
+
+
+    Vec3 aabbMin(-2, -2, -2);
+    Vec3 aabbMax(2, 2, 2);
+
+    Vec3 rayOrigin(-2, 0, -2.5);
+    Vec3 rayDirection(1, 0, 2);
+    //Ray ray(rayOrigin, rayDirection);
+
+    VoxelGrid grid(4, 4, 4, aabbMin, aabbMax);
+
+    Vec3 intersectionPoint(0, 0, 0);
+    AABB_Face intersectionFace;
+
+    float tmin = -INFINITY;
+    float tmax = INFINITY;
+
+    //grid.traverseRay(ray);
+
+    Vec3 cameraPosition(-8, 0, 0);
+    Vec3 cameraTarget(0, 0, 0);
+    Vec3 up(0, 0, 1);
+
+    Camera c(cameraPosition, cameraTarget, up, (3.1415/3.0));
+    c.draw(grid);
+
+    pixels = c.getPixels();
+
+
+    // Show the window
+    ShowWindow(hwnd, nCmdShow);
+
+    // Enter the message loop
+    MSG msg = {};
+    while (GetMessage(&msg, NULL, 0, 0))
+    {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+
+    return static_cast<int>(msg.wParam);
+}
+
 

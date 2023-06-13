@@ -35,6 +35,18 @@ const float& Vec3::operator[](int index) const{
     throw std::out_of_range("Vec3 index out of range");
 }
 
+Vec3 Vec3::operator+(const Vec3& other) const{
+    return Vec3(x + other.x, y + other.y, z + other.z);
+}
+
+Vec3 Vec3::operator-(const Vec3& other) const{
+    return Vec3(x - other.x, y - other.y, z - other.z);
+}
+
+Vec3 Vec3::operator*(float scalar) const {
+    return Vec3(x * scalar, y * scalar, z * scalar);
+}
+
 float Vec3::angleBetween(const Vec3& other) const {
     float dotProduct = dot(other);
     float magnitudesProduct = magnitude() * other.magnitude();
@@ -58,4 +70,12 @@ float Vec3::sinBetween(const Vec3& other) const {
     }
 
     return magnitudeCrossProduct / magnitudesProduct;
+}
+
+Vec3 Vec3::normalize() const {
+    float magnitude = this->magnitude();
+    if (magnitude != 0.0f)
+        return Vec3(x / magnitude, y / magnitude, z / magnitude);
+    else
+        return Vec3();
 }
