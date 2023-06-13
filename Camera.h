@@ -12,8 +12,8 @@ public:
     Vec3 up;
     float fov;
 
-    int imageWidth = 16;
-    int imageHeight = 12;
+    int imageWidth = 640;
+    int imageHeight = 480;
 
     Vec3* pixelArray;
 
@@ -22,6 +22,8 @@ public:
     Ray getRay(int pixelX, int pixelY) const;
 
     Vec3* getPixels();
+
+    void setPixel(int x, int y,Vec3 pixelColors);
 
     void draw(VoxelGrid scene);
 };

@@ -199,7 +199,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     //grid.traverseRay(ray);
 
-    Vec3 cameraPosition(-8, 0, 0);
+    Vec3 cameraPosition(-8, 0, 3);
     Vec3 cameraTarget(0, 0, 0);
     Vec3 up(0, 0, 1);
 

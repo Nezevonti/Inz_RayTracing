@@ -1,6 +1,7 @@
 #include "camera.h"
 #include <cmath>
 #include <Windows.h>
+#include <iostream>
 
 Camera::Camera(const Vec3& position, const Vec3& target, const Vec3& up, float fov)
     : position(position), up(up), fov(fov)
@@ -11,7 +12,7 @@ Camera::Camera(const Vec3& position, const Vec3& target, const Vec3& up, float f
     pixelArray = new Vec3[numPixels];
 }
 
-Ray Camera::getRay(int pixelX, int pixelY) const {
+Ray Camera::getRay(int pixelX, int pixelY) const { //It gets pixels from the bottom left, not the top left as it should.
     float aspectRatio = static_cast<float>(imageWidth) / imageHeight;
     float halfWidth = tan(fov / 2);
     float halfHeight = halfWidth / aspectRatio;
@@ -30,6 +31,12 @@ Vec3* Camera::getPixels() {
     return pixelArray;
 }
 
+void Camera::setPixel(int x, int y, Vec3 pixelColors){
+    if(x<0 || x>= imageWidth) throw std::out_of_range("index out of range");
+    if (y < 0 || y >= imageHeight) throw std::out_of_range("index out of range");
+
+    pixelArray[y * imageHeight + x] = pixelColors;
+}
 
 void Camera::draw(VoxelGrid scene){
 
@@ -40,7 +47,6 @@ void Camera::draw(VoxelGrid scene){
     
     char buffer[100];
 
-    bool bools[12][16];
 
     for (int y = 0; y < imageHeight; ++y) {
         for (int x = 0; x < imageWidth; ++x) {
@@ -67,7 +73,7 @@ void Camera::draw(VoxelGrid scene){
                 pixel.z = 0;
             }
 
-            bools[x][y] = intersect;
+
 
             //sprintf_s(buffer, "(%f,%f,%f) %c\n", ray.direction.x, ray.direction.y, ray.direction.z, intersect ? 'T' : 'F');
             //OutputDebugStringA(buffer);
@@ -75,11 +81,14 @@ void Camera::draw(VoxelGrid scene){
             // Assign the calculated pixel color to the canvas
             // canvas.setPixelColor(x, y, calculatedColor);
 
-            pixelArray[y * imageHeight + x] = pixel;
+            //sprintf_s(buffer, "(%d,%d) - %d\n",x,y, y * imageHeight + x);
+            //OutputDebugStringA(buffer);
+
+            pixelArray[y * imageWidth + x] = pixel;
         }
     }
 
-
+    /*
     for (int i = 0; i < 12; i++) {
         for (int j = 0; j < 16; j++) {
             sprintf_s(buffer, "%c",bools[i][j] ? 'T' : 'F');
@@ -88,5 +97,6 @@ void Camera::draw(VoxelGrid scene){
         sprintf_s(buffer, "\n");
         OutputDebugStringA(buffer);
     }
+    */
 
 }
