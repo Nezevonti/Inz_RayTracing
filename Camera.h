@@ -21,11 +21,23 @@ public:
 
     Ray getRay(int pixelX, int pixelY) const;
 
+    Ray getRay(float u, float v) const;
+
     Vec3* getPixels();
 
     void setPixel(int x, int y,Vec3 pixelColors);
 
     void draw(VoxelGrid scene);
+
+private : 
+    Vec3 right;
+    Vec3 upNormalized;
+
+    float aspectRatio;
+    float halfWidth;
+    float halfHeight;
+
+    float randFloat() const;
 };
 
 #endif // CAMERA_H
