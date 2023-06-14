@@ -79,3 +79,13 @@ Vec3 Vec3::normalize() const {
     else
         return Vec3();
 }
+
+Vec3 Vec3::mapToUnitRange()
+{
+    // Map the x, y, and z components individually
+    float mappedX = (x + 1.0f) * 0.5f;
+    float mappedY = (y + 1.0f) * 0.5f;
+    float mappedZ = (z + 1.0f) * 0.5f;
+
+    return Vec3(mappedX, mappedY, mappedZ);
+}

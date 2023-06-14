@@ -10,6 +10,9 @@
 #include "Voxel.h"
 #include "VoxelGrid.h"
 #include "Camera.h"
+#include "Sphere.h"
+#include "Cube.h"
+#include "scene.h"
 
 void intersectionTest(Ray ray, AABB aabb) {
 
@@ -182,14 +185,19 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     }
 
 
-    Vec3 aabbMin(-2, -2, -2);
-    Vec3 aabbMax(2, 2, 2);
+
+
+    
+
+
+    Vec3 aabbMin(-4, -4, -4);
+    Vec3 aabbMax(4, 4, 4);
 
     Vec3 rayOrigin(-2, 0, -2.5);
     Vec3 rayDirection(1, 0, 2);
     //Ray ray(rayOrigin, rayDirection);
 
-    VoxelGrid grid(4, 4, 4, aabbMin, aabbMax);
+    VoxelGrid grid(16, 16, 16, aabbMin, aabbMax);
 
     Vec3 intersectionPoint(0, 0, 0);
     AABB_Face intersectionFace;
@@ -199,14 +207,45 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     //grid.traverseRay(ray);
 
-    Vec3 cameraPosition(-8, 8, 8);
+    Vec3 cameraPosition(-20, 0, 0);
     Vec3 cameraTarget(0, 0, 0);
     Vec3 up(0, 0, 1);
 
-    Camera c(cameraPosition, cameraTarget, up, (3.1415/3.0));
-    c.draw(grid);
+    Camera cam(cameraPosition, cameraTarget, up, (3.1415/3.0));
 
-    pixels = c.getPixels();
+
+    //create scene object
+    Scene scene(grid, cam);
+
+    //create primitives
+    Sphere *s1 = new Sphere(Vec3(), 1.0);
+    //Cube *c1 = new Cube(Vec3(2, 2, 2), Vec3(2.5, 2.5, 2.5));
+
+    
+    //scene.addPrimitive(s1);
+    scene.addPrimitive(s1);
+
+    /*
+    bool b;
+    char buffer[100];
+    for (int x = 0; x < 16; x++) {
+        for (int y = 0; y < 16; y++) {
+            for (int z = 0; z < 16; z++) {
+                b = grid.getVoxel(x, y, z).occupied;
+                if (b) {
+                    sprintf_s(buffer, "(%d,%d,%d) %c\n", x, y, z, b ? 'T' : 'F');
+                    OutputDebugStringA(buffer);
+                    b = false;
+                }
+            }
+        }
+    }
+    */
+
+    //cam.draw(grid);
+    scene.render();
+
+    pixels = cam.getPixels();
 
 
     // Show the window

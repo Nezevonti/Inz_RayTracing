@@ -4,9 +4,7 @@
 #include "vec3.h"
 #include "ray.h"
 #include "voxel.h"
-
-// Forward declaration of the Voxel class
-
+#include "Hittable.h"
 
 // VoxelGrid class declaration
 class VoxelGrid {
@@ -25,8 +23,10 @@ public:
 
     Vec3 getVoxelSize() const;
     Vec3 getVoxelArrayIndexes(const Vec3& point) const;
+    Voxel& getVoxel(int x, int y, int z);
+    void calculateVoxelBounds();
     // Function for fast voxel traversal algorithm
-    void traverseRay(const Ray& ray);
+    void traverseRay(const Ray& ray, HitRecord& record);
 };
 
 #endif // VOXELGRID_H

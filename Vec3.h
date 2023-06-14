@@ -30,6 +30,8 @@ public:
     Vec3 operator*(float scalar) const;
 
     Vec3 normalize() const;
+
+    Vec3 mapToUnitRange();
 };
 
 #endif  // VEC3_H

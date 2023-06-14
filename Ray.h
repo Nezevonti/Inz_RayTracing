@@ -10,6 +10,7 @@ public:
     Vec3 direction_inverse;
 
     Ray(const Vec3& _rigin, const Vec3& direction);
+    Vec3 at(float t) const;
 };
 
 #endif  // RAY_H

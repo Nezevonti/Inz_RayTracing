@@ -20,6 +20,7 @@ VoxelGrid::VoxelGrid(int sizeX, int sizeY, int sizeZ, Vec3 minPoint, Vec3 maxPoi
         voxels = new Voxel[numVoxels];
 
         mainVoxel =  Voxel(minPoint, maxPoint, 1.0);
+        calculateVoxelBounds();
 
 }
 
@@ -47,7 +48,7 @@ Vec3 VoxelGrid::getVoxelArrayIndexes(const Vec3& point) const {
     return Vec3(indexX, indexY, indexZ);
 }
 
-void VoxelGrid::traverseRay(const Ray& ray) {
+void VoxelGrid::traverseRay(const Ray& ray, HitRecord& record) {
     // Compute the ray direction in voxel coordinates
     int stepX = (ray.direction.x >= 0) ? 1 : -1;
     int stepY = (ray.direction.y >= 0) ? 1 : -1;
@@ -57,14 +58,17 @@ void VoxelGrid::traverseRay(const Ray& ray) {
     Vec3 intersectionPoint(0, 0, 0);
     AABB_Face intersectionFace;
 
+    float tmin_overall = -INFINITY;
+    float tmax_overall = INFINITY;
+
     bool intersect = mainVoxel.intersect(ray, intersectionPoint, intersectionFace);
     if (!intersect) return; //ray doesnt hit the gridspace, no need to walk it
 
     // Calculate the initial cell coordinates
-    Vec3 currentVoxel = getVoxelArrayIndexes(intersectionPoint);
-    int currentX = currentVoxel.x;
-    int currentY = currentVoxel.y;
-    int currentZ = currentVoxel.z;
+    Vec3 currentVoxelIndexes = getVoxelArrayIndexes(intersectionPoint);
+    int currentX = currentVoxelIndexes.x;
+    int currentY = currentVoxelIndexes.y;
+    int currentZ = currentVoxelIndexes.z;
 
     // Calculate the tDelta values
     float tDeltaX = std::abs(1.0f / ray.direction.x);
@@ -76,12 +80,35 @@ void VoxelGrid::traverseRay(const Ray& ray) {
     float tMaxY = tDeltaY * 0.5f;
     float tMaxZ = tDeltaZ * 0.5f;
 
+    Voxel* currentVoxel;
+
     // Perform the voxel traversal loop
     while (currentX >= 0 && currentX < sizeX &&
         currentY >= 0 && currentY < sizeY &&
         currentZ >= 0 && currentZ < sizeZ) {
-        // Process the current cell (e.g., perform intersection test, update voxel data, etc.)
-        // ...
+        // Process the current cell
+
+
+        currentVoxel = &getVoxel(currentX, currentY, currentZ);
+
+        if (currentVoxel->occupied) {
+            int numPrimitives = currentVoxel->primitives.size();
+
+            for (int i = 0; i < numPrimitives; i++) {
+
+                //there is a primitive in this voxel, does the ray intersect with it?
+                bool hit_prim_aabb = currentVoxel->primitives.at(i)->boundingBox.intersect(ray, intersectionPoint, intersectionFace);
+
+                if (hit_prim_aabb) {
+                    //get t_min & t_max for given ray and voxel?
+                    bool hit_prim = currentVoxel->primitives.at(i)->hit(ray, tmin_overall, tmax_overall, record);
+
+                    if (hit_prim) {
+                        return;
+                    }
+                }                                
+            }
+        }
 
         // Determine the next axis to step along based on the tMax values
         if (tMaxX < tMaxY) {
@@ -105,17 +132,37 @@ void VoxelGrid::traverseRay(const Ray& ray) {
             }
         }
 
-        // Update the ray parameter (t) based on the chosen axis and the new tMax value
-        // ...
-        currentVoxel.x = currentX;
-        currentVoxel.y = currentY;
-        currentVoxel.z = currentZ;
-        currentVoxel.print();
+        // Update the ray parameter (t) 
+        //currentVoxelIndexes.x = currentX;
+        //currentVoxelIndexes.y = currentY;
+        //currentVoxelIndexes.z = currentZ;
+        //currentVoxel.print();
 
         // Check for intersection or termination conditions
-        // ...
 
         // Repeat the loop
+    }
+}
+
+Voxel& VoxelGrid::getVoxel(int x, int y, int z) {
+    int index = x + y * sizeX + z * sizeX * sizeY;
+    return voxels[index];
+}
+
+
+void VoxelGrid::calculateVoxelBounds() {
+    Vec3 voxelSize = getVoxelSize();
+
+    for (int z = 0; z < sizeZ; ++z) {
+        for (int y = 0; y < sizeY; ++y) {
+            for (int x = 0; x < sizeX; ++x) {
+                int index = z * sizeX * sizeY + y * sizeX + x;
+                Voxel& voxel = voxels[index];
+
+                voxel.minPoint = Vec3(x * voxelSize.x, y * voxelSize.y, z * voxelSize.z);
+                voxel.maxPoint = voxel.minPoint + voxelSize;
+            }
+        }
     }
 }
 

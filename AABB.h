@@ -21,11 +21,14 @@ public:
     Vec3 minPoint;
     Vec3 maxPoint;
 
+    AABB();
     AABB(const Vec3& minPoint, const Vec3& maxPoint);
 
     Vec3 calculateIntersectionPoint(const Ray& ray, float t) const;
 
     bool intersect(const Ray& ray, Vec3& intersectionPoint, AABB_Face& intersectionFace) const;
+
+    bool intersect(const Ray& ray, Vec3& intersectionPoint, AABB_Face& intersectionFace, float &tmin, float &tmax) const;
 
     static Vec3 getFaceNormal(AABB_Face face);
 
