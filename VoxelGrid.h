@@ -13,7 +13,7 @@ public:
     int sizeY;
     int sizeZ;
 
-    Voxel* voxels; //grid of voxels describing the scene
+    std::vector<Voxel*> voxels; //grid of voxels describing the scene
     Voxel mainVoxel;
 
     
@@ -21,9 +21,10 @@ public:
     VoxelGrid(int sizeX, int sizeY, int sizeZ, Vec3 minPoint, Vec3 maxPoint);
     ~VoxelGrid();
 
+    bool isPointInsideVoxel(const Vec3& point, const Vec3& voxelMin, const Vec3& voxelMax) const;
     Vec3 getVoxelSize() const;
     Vec3 getVoxelArrayIndexes(const Vec3& point) const;
-    Voxel& getVoxel(int x, int y, int z);
+    Voxel* getVoxel(int x, int y, int z);
     void calculateVoxelBounds();
     // Function for fast voxel traversal algorithm
     void traverseRay(const Ray& ray, HitRecord& record);

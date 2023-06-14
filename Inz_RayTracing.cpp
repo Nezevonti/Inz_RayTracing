@@ -197,7 +197,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     Vec3 rayDirection(1, 0, 2);
     //Ray ray(rayOrigin, rayDirection);
 
-    VoxelGrid grid(16, 16, 16, aabbMin, aabbMax);
+    VoxelGrid grid(8+2, 8+2, 8+2, aabbMin, aabbMax);
 
     Vec3 intersectionPoint(0, 0, 0);
     AABB_Face intersectionFace;
@@ -207,7 +207,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     //grid.traverseRay(ray);
 
-    Vec3 cameraPosition(-20, 0, 0);
+    Vec3 cameraPosition(-15, 5, 5);
     Vec3 cameraTarget(0, 0, 0);
     Vec3 up(0, 0, 1);
 
@@ -222,8 +222,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     //Cube *c1 = new Cube(Vec3(2, 2, 2), Vec3(2.5, 2.5, 2.5));
 
     
-    //scene.addPrimitive(s1);
     scene.addPrimitive(s1);
+    //scene.addPrimitive(c1);
 
     /*
     bool b;

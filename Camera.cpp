@@ -85,14 +85,18 @@ void Camera::draw(VoxelGrid scene){
             // Chceck if ray even hits the voxelGrid
             bool intersect = scene.mainVoxel.intersect(ray, intersectionPoint, intersectionFace,tmin,tmax);
             if (intersect) { 
+                //additional check, had problem with intersection point being just outside the voxel;
+                //if (!scene.isPointInsideVoxel(intersectionPoint, scene.mainVoxel.minPoint, scene.mainVoxel.maxPoint)) continue;
+
+
                 scene.traverseRay(ray,record);
 
                 //hit grid but nothing inside
                 if (record.t > tmax || record.t < tmin) {
                     //background color
-                    pixel.x = 0;
-                    pixel.y = 0;
-                    pixel.z = 0;
+                    pixel.x = 0.5;
+                    pixel.y = 0.5;
+                    pixel.z = 0.5;
 
                     continue;
                 }
@@ -101,16 +105,15 @@ void Camera::draw(VoxelGrid scene){
             }
             else {
                 //background color
-                pixel.x = 0;
-                pixel.y = 0;
-                pixel.z = 0;
+                pixel.x = 0.5;
+                pixel.y = 0.5;
+                pixel.z = 0.5;
             }
 
             // Assign the calculated pixel color
 
             pixelArray[y * imageWidth + x] = pixel;
-            //TYMCZASOWE_END
-
+            record.t = -INFINITY;
 
         }
     }
