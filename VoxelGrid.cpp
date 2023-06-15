@@ -130,14 +130,16 @@ void VoxelGrid::traverseRay(const Ray& ray, HitRecord& record) {
 
 
         currentVoxel = getVoxel(currentX, currentY, currentZ);
+        tmin_overall = -INFINITY;
+        tmax_overall = INFINITY;
 
         if (currentVoxel->occupied) {
             int numPrimitives = currentVoxel->primitives.size();
 
             for (int i = 0; i < numPrimitives; i++) {
 
-                //there is a primitive in this voxel, does the ray intersect with it?
-                bool hit_prim_aabb = currentVoxel->primitives.at(i)->boundingBox.intersect(ray, intersectionPoint, intersectionFace);
+                //there is a primitive in this voxel, does the ray intersect with its aabb?
+                bool hit_prim_aabb = currentVoxel->primitives.at(i)->boundingBox.intersect(ray, intersectionPoint, intersectionFace,tmin_overall,tmax_overall);
 
                 if (hit_prim_aabb) {
                     //get t_min & t_max for given ray and voxel?

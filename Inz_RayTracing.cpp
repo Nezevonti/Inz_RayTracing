@@ -207,7 +207,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     //grid.traverseRay(ray);
 
-    Vec3 cameraPosition(-15, 5, 5);
+    Vec3 cameraPosition(-15, 0, 0);
     Vec3 cameraTarget(0, 0, 0);
     Vec3 up(0, 0, 1);
 
@@ -219,11 +219,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     //create primitives
     Sphere *s1 = new Sphere(Vec3(), 1.0);
-    //Cube *c1 = new Cube(Vec3(2, 2, 2), Vec3(2.5, 2.5, 2.5));
+    Cube *c1 = new Cube(Vec3(-2, -2, -2), Vec3(-1, -1, -1));
 
     
     scene.addPrimitive(s1);
-    //scene.addPrimitive(c1);
+    scene.addPrimitive(c1);
 
     /*
     bool b;
@@ -242,7 +242,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     }
     */
 
-    //cam.draw(grid);
     scene.render();
 
     pixels = cam.getPixels();

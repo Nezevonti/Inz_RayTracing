@@ -47,6 +47,10 @@ Vec3 Vec3::operator*(float scalar) const {
     return Vec3(x * scalar, y * scalar, z * scalar);
 }
 
+Vec3 Vec3::operator*(const Vec3& other) const {
+    return Vec3(x * other.x, y * other.y, z * other.z);
+}
+
 float Vec3::angleBetween(const Vec3& other) const {
     float dotProduct = dot(other);
     float magnitudesProduct = magnitude() * other.magnitude();
